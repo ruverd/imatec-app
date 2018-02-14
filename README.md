@@ -20,8 +20,6 @@
 	</a>
 </p>
 
-English | [简体中文](./README.zh-CN.md)
-
 ## Introduction
 
 `vue-element-admin` is a production-ready solution for admin interfaces. Based on [Vue.js](https://github.com/vuejs/vue) and use the UI Toolkit -- [element](https://github.com/ElemeFE/element). `vue-element-admin` is a magical vue admin, it based on the newest development stack of vue, built-in i18n solution, typical templates for enterprise applications, lots of awesome features. It helps you build a large complex Single-Page Applications. I believe whatever your needs are, this project will help you.
@@ -96,7 +94,7 @@ You need to install [node](http://nodejs.org/) and [git](https://git-scm.com/) l
 
 ```bash
 # clone the projice
-git clone https://github.com/PanJiaChen/vue-element-admin.git
+git clone https://github.com/ruverd/imatec-app.git
 
 # install dependency
 npm install
