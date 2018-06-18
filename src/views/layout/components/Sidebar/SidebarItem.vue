@@ -47,6 +47,11 @@ export default {
   },
   methods: {
     generateTitle
+  },
+  computed: {
+    sidebar() {
+      return this.$store.state.app.sidebar
+    }
   }
 }
 </script>

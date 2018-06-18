@@ -11,11 +11,20 @@ const service = axios.create({
 
 // request interceptor
 service.interceptors.request.use(config => {
+  if (!config.url.includes('/transaction/list')) {
+    const _URL = (config.url.includes(process.env.ROUTER_TOKEN, '/api')) ? config.url : `/api${config.url}`
+    config.url = process.env.BASE_API + _URL
+  }
   // Do something before request is sent
   if (store.getters.token) {
-    config.headers['X-Token'] = getToken() // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
+    config.headers.Authorization = `Bearer ${getToken()}`
   }
   return config
+  // Do something before request is sent
+  // if (store.getters.token) {
+  //   config.headers['X-Token'] = getToken() // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
+  // }
+  // return config
 }, error => {
   // Do something with request error
   console.log(error) // for debug

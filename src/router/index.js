@@ -8,25 +8,27 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '../views/layout/Layout'
+import Page from '../views/layout/Page'
+import Custom from '../views/layout/Custom'
 
 /** note: submenu only apppear when children.length>=1
-*   detail see  https://panjiachen.github.io/vue-element-admin-site/#/router-and-nav?id=sidebar
-**/
+ *   detail see  https://panjiachen.github.io/vue-element-admin-site/#/router-and-nav?id=sidebar
+ **/
 
 /**
-* hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
-* alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
-*                                if not set alwaysShow, only more than one route under the children
-*                                it will becomes nested mode, otherwise not show the root menu
-* redirect: noredirect           if `redirect:noredirect` will no redirct in the breadcrumb
-* name:'router-name'             the name is used by <keep-alive> (must set!!!)
-* meta : {
+ * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
+ * alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
+ *                                if not set alwaysShow, only more than one route under the children
+ *                                it will becomes nested mode, otherwise not show the root menu
+ * redirect: noredirect           if `redirect:noredirect` will no redirct in the breadcrumb
+ * name:'router-name'             the name is used by <keep-alive> (must set!!!)
+ * meta : {
     roles: ['admin','editor']     will control the page roles (you can set multiple roles)
     title: 'title'               the name show in submenu and breadcrumb (recommend set)
     icon: 'svg-name'             the icon show in the sidebar,
     noCache: true                if fasle ,the page will no be cached(default is false)
   }
-**/
+ **/
 export const constantRouterMap = [
   { path: '/login', component: _import('login/index'), hidden: true },
   { path: '/authredirect', component: _import('login/authredirect'), hidden: true },
@@ -53,6 +55,45 @@ export const constantRouterMap = [
       name: 'documentation',
       meta: { title: 'documentation', icon: 'documentation', noCache: true }
     }]
+  },
+  {
+    path: '',
+    component: Layout,
+    redirect: 'noredirect',
+    name: 'stock',
+    meta: {
+      title: 'Estoque',
+      icon: 'warehouse'
+    },
+    children: [
+      {
+        path: '/stock/product',
+        component: Page,
+        redirect: 'noredirect',
+        name: 'stockProduct',
+        meta: { title: 'Produto' },
+        children: [
+          { path: 'products', component: _import('stock/products/index'), name: 'stockProducts', meta: { title: 'Produtos' }},
+          { path: 'categories', component: _import('stock/product_categories/index'), name: 'stockProductCategories', meta: { title: 'Categorias', header: 'Categoria de Produto' }, acl: 'store.category.view' },
+          { path: 'movements', component: _import('stock/product_movements/index'), name: 'stockProductMovements', meta: { title: 'Movimentações' }}
+        ]
+      },
+      {
+        path: '/stock/asset',
+        component: Page,
+        redirect: 'noredirect',
+        name: 'stockAsset',
+        meta: { title: 'Patrimônio' },
+        children: [
+          { path: 'assets', component: _import('stock/assets/index'), name: 'stockAssets', meta: { title: 'Patrimônios' }},
+          { path: 'movements', component: _import('stock/asset_movements/index'), name: 'stockAssetMovements', meta: { title: 'Movimentações' }},
+          { path: 'maintenances', component: _import('stock/asset_maintenances/index'), name: 'stockAssetMaintenances', meta: { title: 'Manutenções' }}
+        ]
+      },
+      { path: 'stock/softwares', component: _import('stock/softwares/index'), name: 'stockSoftwares', meta: { title: 'Softwares' }},
+      { path: 'stock/suppliers', component: _import('stock/suppliers/index'), name: 'stockSuppliers', meta: { title: 'Fornecedores' }},
+      { path: 'stock/spots', component: _import('stock/spots/index'), name: 'stockSpots', meta: { title: 'Locais' }}
+    ]
   }
 ]
 
@@ -177,7 +218,20 @@ export const asyncRouterMap = [
       { path: 'edit-form', component: _import('form/edit'), name: 'editForm', meta: { title: 'editForm', icon: 'table' }}
     ]
   },
-
+  {
+    path: '',
+    component: Custom,
+    redirect: 'noredirect',
+    name: 'admin',
+    meta: {
+      title: 'Administração',
+      icon: 'lock'
+    },
+    children: [
+      { path: 'admin/users', component: _import('admin/organizations/index'), name: 'adminUsers', meta: { title: 'Usuários' }},
+      { path: 'admin/organizations', component: _import('admin/organizations/index'), name: 'adminOrganizations', meta: { title: 'Organizações' }}
+    ]
+  },
   {
     path: '/error',
     component: Layout,

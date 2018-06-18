@@ -5,6 +5,7 @@
 			<navbar></navbar>
 			<tags-view></tags-view>
 			<app-main></app-main>
+			<el-footer>Copyright © 2018 - <a href="http://www.imatec.com.br">Imatec - Gerenciamento Seguro da Informação</a></el-footer>
 		</div>
 	</div>
 </template>
@@ -35,5 +36,11 @@ export default {
 	  position: relative;
 	  height: 100%;
 	  width: 100%;
+	}
+	.el-footer {
+	  background-color: #fff;
+	  color: #333;
+	  text-align: center;
+	  line-height: 60px;
 	}
 </style>

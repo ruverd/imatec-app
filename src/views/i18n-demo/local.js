@@ -32,5 +32,22 @@ export default {
       warning: 'warning',
       danger: 'danger'
     }
+  },
+  pt: {
+    i18nView: {
+      title: 'Mudar Idioma',
+      note: 'Atual tradução i18n funciona apenas para sidebar e levelbar...',
+      datePlaceholder: 'Escolha um dia',
+      tableDate: 'tableDate',
+      tableName: 'tableName',
+      tableAddress: 'tableAddress',
+      default: 'default:',
+      primary: 'primary',
+      success: 'success',
+      info: 'info',
+      warning: 'warning',
+      danger: 'danger',
+      screenfull: 'Tela Cheia'
+    }
   }
 }

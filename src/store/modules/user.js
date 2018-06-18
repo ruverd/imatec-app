@@ -1,25 +1,22 @@
 import { loginByUsername, logout, getUserInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { User } from '@/utils/user'
+import { Acl } from '@/utils/acl'
 
 const user = {
   state: {
-    user: '',
-    status: '',
-    code: '',
+    info: [],
     token: getToken(),
-    name: '',
     avatar: '',
     introduction: '',
     roles: [],
+    acl: [],
     setting: {
       articlePlatform: []
     }
   },
 
   mutations: {
-    SET_CODE: (state, code) => {
-      state.code = code
-    },
     SET_TOKEN: (state, token) => {
       state.token = token
     },
@@ -29,48 +26,66 @@ const user = {
     SET_SETTING: (state, setting) => {
       state.setting = setting
     },
-    SET_STATUS: (state, status) => {
-      state.status = status
-    },
-    SET_NAME: (state, name) => {
-      state.name = name
-    },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_ACL: (state, acl) => {
+      state.acl = acl
+    },
+    SET_INFO: (state, info) => {
+      state.info = info
     }
   },
 
   actions: {
-    // 用户名登录
-    LoginByUsername({ commit }, userInfo) {
+    LoginByUsername({ commit, dispatch }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
           const data = response.data
-          commit('SET_TOKEN', data.token)
-          setToken(response.data.token)
+          commit('SET_TOKEN', data.access_token)
+          setToken(response.data.access_token)
+          dispatch('AfterLogin')
           resolve()
         }).catch(error => {
           reject(error)
         })
       })
     },
-
-    // 获取用户信息
+    AfterLogin({ commit, dispatch }) {
+      return new Promise((resolve, reject) => {
+        dispatch('GetUserInfo')
+        dispatch('GetAcl')
+      })
+    },
     GetUserInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
-        getUserInfo(state.token).then(response => {
+        User.get().then(response => {
           if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
             reject('error')
           }
           const data = response.data
-          commit('SET_ROLES', data.roles)
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
-          commit('SET_INTRODUCTION', data.introduction)
+          commit('SET_ROLES', ['admin'])
+          commit('SET_INFO', data)
+          commit('SET_AVATAR', process.env.BASE_API + '/images/avatars/' + state.info.id + '.jpg')
+          commit('SET_INTRODUCTION', 'Olá ' + state.info.name)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    GetAcl({ commit, state }) {
+      return new Promise((resolve, reject) => {
+        Acl.get().then(response => {
+          if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
+            reject('error')
+          }
+          const data = response.data
+          commit('SET_ACL', data)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -98,6 +113,8 @@ const user = {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
+          commit('SET_ACL', [])
+          commit('SET_INFO', [])
           removeToken()
           resolve()
         }).catch(error => {
@@ -114,8 +131,6 @@ const user = {
         resolve()
       })
     },
-
-    // 动态修改权限
     ChangeRoles({ commit }, role) {
       return new Promise(resolve => {
         commit('SET_TOKEN', role)
@@ -123,7 +138,6 @@ const user = {
         getUserInfo(role).then(response => {
           const data = response.data
           commit('SET_ROLES', data.roles)
-          commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
           commit('SET_INTRODUCTION', data.introduction)
           resolve()
